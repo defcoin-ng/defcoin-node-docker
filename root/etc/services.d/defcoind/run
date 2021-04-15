@@ -1,0 +1,6 @@
+#!/usr/bin/with-contenv bash
+
+cd /app/defcoin || exit
+
+exec \
+	s6-setuidgid abc /app/defcoin/bin/defcoind -printtoconsole -datadir=/config

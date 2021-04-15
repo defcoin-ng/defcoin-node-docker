@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv bash
+
+# check for defcoin.conf, and create empty file if needed
+ [[ ! -f "/config/defcoin.conf" ]] && \
+ 	defcoin.conf
+
+# permissions
+chown -R abc:abc \
+	/config
