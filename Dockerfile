@@ -63,6 +63,7 @@ COPY install_db4.sh /tmp/defcoin/install_db4.sh
 RUN \
  cd /tmp/defcoin && \
  echo "**** compile defcoin ****" && \
+ chmod +x /tmp/defcoin/install_db4.sh && \
  /tmp/defcoin/install_db4.sh /tmp/defcoin && \
  ./autogen.sh && \
  ./configure \
