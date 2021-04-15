@@ -10,6 +10,8 @@ LABEL maintainer="bashNinja"
 # set environment variables
 ENV HOME="/config"
 
+ARG REPO="mspicer/Defcoin"
+
 ARG BUILD_PACKAGES="\
 	build-essential \
 	git \
@@ -31,8 +33,6 @@ ARG BUILD_PACKAGES="\
 
 # packages as variables
 
-ARG RUNTIME_PACKAGES="wget"
-
 RUN \
  apt-get update && \
  echo "**** install build packages ****" && \
@@ -45,14 +45,14 @@ RUN \
 	$RUNTIME_PACKAGES && \
  echo "**** download defcoin source ****" && \
  if [ -z ${DEFCOIN_VERSION+x} ]; then \
-	DEFCOIN_VERSION=$(curl -sX GET "https://api.github.com/repos/miketweaver/Defcoin/releases/latest" \
+	DEFCOIN_VERSION=$(curl -sX GET "https://api.github.com/repos/${REPO}/releases/latest" \
 	| awk '/tag_name/{print $4;exit}' FS='[""]'); \
  fi && \
  export COMMIT_TAG="${DEFCOIN_VERSION}" && \
- echo "https://github.com/miketweaver/Defcoin/archive/${DEFCOIN_VERSION}.tar.gz" && \
+ echo "https://github.com/${REPO}/archive/${DEFCOIN_VERSION}.tar.gz" && \
  curl -o \
 	/tmp/defcoin.tar.gz -L \
-	"https://github.com/miketweaver/Defcoin/archive/${DEFCOIN_VERSION}.tar.gz" && \
+	"https://github.com/${REPO}/archive/${DEFCOIN_VERSION}.tar.gz" && \
  mkdir -p /tmp/defcoin && \
  tar xzf \
 	/tmp/defcoin.tar.gz -C \
@@ -98,5 +98,4 @@ COPY root/ /
 
 # ports and volumes
 EXPOSE 1337
-EXPOSE 1338
 VOLUME /config

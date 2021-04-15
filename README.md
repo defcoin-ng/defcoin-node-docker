@@ -1,13 +1,22 @@
-## MiningCore-Docker
+## DefcionNode-Docker
 
-Official MiningCore docker-image
+Defcoin Node docker-image
 
 ### Usage
 
-The image expects a valid pool configuration file as volume argument:
+The image expects a mount point to store the configuration:
 
 ```bash
-$ docker run -d -p 3032:3032 -v /path/to/config.json:/config.json:ro coinfoundry/miningcore-docker
+$ docker run -d \
+    --name=defcoin-node \
+    -e PUID=1000 \
+    -e PGID=1000 \
+    -p 1337:1337 \
+    -v /{local mount path}/:/config \
+    --restart unless-stopped \
+    defcoin-node-docker
 ```
 
-As shown in the example above you also need to expose all the stratum ports you've specified in config.json.
+### Credits
+The base images is based on the LinuxServer.io images.
+https://www.linuxserver.io/
