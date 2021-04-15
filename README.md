@@ -14,7 +14,7 @@ $ docker run -d \
     -p 1337:1337 \
     -v /{local mount path}/:/config \
     --restart unless-stopped \
-    defcoin-node-docker
+    defcoinng/defcoin-node-docker
 ```
 
 ### Credits
