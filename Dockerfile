@@ -15,6 +15,7 @@ ARG REPO="mspicer/Defcoin"
 ARG BUILD_PACKAGES="\
 	build-essential \
 	git \
+	python \
 	libtool \
 	autotools-dev \
 	automake \
@@ -22,14 +23,7 @@ ARG BUILD_PACKAGES="\
 	libssl-dev \
 	libevent-dev \
 	bsdmainutils \
-	libminiupnpc-dev \
-	libzmq3-dev \
-	libboost-system-dev \
-	libboost-filesystem-dev \
-	libboost-chrono-dev \
-	libboost-program-options-dev \
-	libboost-test-dev \
-	libboost-thread-dev"
+	sudo"
 
 # packages as variables
 
@@ -63,13 +57,13 @@ COPY install_db4.sh /tmp/defcoin/install_db4.sh
 RUN \
  cd /tmp/defcoin && \
  echo "**** compile defcoin ****" && \
- chmod +x /tmp/defcoin/install_db4.sh && \
- /tmp/defcoin/install_db4.sh /tmp/defcoin && \
+ cd depends && \
+ chown abc:abc -R /tmp/defcoin/ && \
+ sudo -u abc make HOST=x86_64-pc-linux-gnu -j8 && \
+ cd /tmp/defcoin && \
  ./autogen.sh && \
- ./configure \
+ CONFIG_SITE=$PWD/depends/x86_64-pc-linux-gnu/share/config.site ./configure \
 	--prefix=/app/defcoin \
-	LDFLAGS=-L/tmp/defcoin/db4/lib/ \
-	CPPFLAGS=-I/tmp/defcoin/db4/include/ \
 	--mandir=/usr/share/man \
 	--disable-tests \
 	--disable-bench  \
@@ -78,20 +72,21 @@ RUN \
 	--with-utils \
 	--with-libs \
 	--with-daemon && \
- make -j8 && \
+ make HOST=x86_64-pc-linux-gnu -j8 && \
  mkdir -p /app/defcoin && \
  make install && \
+ touch /tester && \
  strip /app/defcoin/bin/defcoin-cli && \
  strip /app/defcoin/bin/defcoin-tx && \
  strip /app/defcoin/bin/defcoind && \
  strip /app/defcoin/lib/libbitcoinconsensus.a && \
  strip /app/defcoin/lib/libbitcoinconsensus.so.0.0.0 && \
  echo "**** cleanup ****" && \
+ export SUDO_FORCE_REMOVE=yes && \
  apt-get purge -y --auto-remove \
 	$BUILD_PACKAGES && \
  rm -rf \
-	/root/.cache \
-	/tmp/* && \
+	/root/.cache && \
  apt-get clean -y
 
 # copy local files
@@ -99,4 +94,5 @@ COPY root/ /
 
 # ports and volumes
 EXPOSE 1337
+EXPOSE 1338
 VOLUME /config
