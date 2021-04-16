@@ -50,11 +50,7 @@ RUN \
  mkdir -p /tmp/defcoin && \
  tar xzf \
 	/tmp/defcoin.tar.gz -C \
-	/tmp/defcoin/ --strip-components=1
-
-COPY install_db4.sh /tmp/defcoin/install_db4.sh
-
-RUN \
+	/tmp/defcoin/ --strip-components=1 && \
  cd /tmp/defcoin && \
  echo "**** compile defcoin ****" && \
  cd depends && \
@@ -75,7 +71,6 @@ RUN \
  make HOST=x86_64-pc-linux-gnu -j8 && \
  mkdir -p /app/defcoin && \
  make install && \
- touch /tester && \
  strip /app/defcoin/bin/defcoin-cli && \
  strip /app/defcoin/bin/defcoin-tx && \
  strip /app/defcoin/bin/defcoind && \
